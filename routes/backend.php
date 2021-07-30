@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\DataTableController;
+use App\Http\Controllers\Admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +20,7 @@ use App\Http\Controllers\DataTableController;
 Route::get('angel', function() {
     echo "backend";
 });
+
+Route::resource('users', UserController::class);
 
 Route::get('datatable/resources', [DataTableController::class, 'datatable'])->name('datatables.resource');

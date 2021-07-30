@@ -31,8 +31,13 @@ class DataTableController extends Controller
 
     public function users($request) {
 
-        $users = DB::table('users')->get();
-        $table = Datatables::of($users);
+        $users = DB::table('users')
+            ->select('users.*', DB::raw('CONCAT("Maintainer") as role'))->get();
+
+        $table = Datatables::of($users)
+            ->addColumn('actions', function($query) {
+                return view('admin.actions');
+            });
 
         return $table->make(true);
     }
