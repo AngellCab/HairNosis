@@ -24,7 +24,6 @@
         <div class="d-flex justify-content-between align-items-center mx-50 row pt-0 pb-2 filter-area">
             @foreach($filters as $index => $filter)
                 <div class="{{ $filter['width'] }}">
-                    <!-- {!! Form::label($filter['idname'], $filter['label'], ['class' => 'mb-3 block']) !!} -->
                     {!! Form::select($filter['idname'], $filter['listArray'], null, ['id' => $filter['idname'], 
                         'class' => 'form-control text-capitalize mb-md-0 mb-2xx', isset($filter['data']) ? $filter['data'] : '',
                         'placeholder' => 'Select role']) !!}
@@ -114,15 +113,6 @@
                             {!! $filter['datacall'] !!}
                         @endforeach
                     @endif
-
-                    @if(isset($dateFilters))
-                        if($('#dates').is(':checked'))
-                            d.dates = $('#dates').is(':checked');
-
-                        @foreach($dateFilters as $filter)
-                            {!! $filter['datacall'] !!}
-                        @endforeach
-                    @endif
                 }
             };
 
@@ -130,6 +120,21 @@
                 $.userDataTable(ajax, routeName ,columns, order, 'en')
             @else
                 $.dataTable(ajax, routeName, columns, order, 'en')
+            @endif
+
+            $.bindActionButtons()
+
+            @if(isset($filters))
+                @foreach($filters as $filter)
+                    $('select#{!! $filter['idname'] !!}').change(function () {
+
+                        simpleTable.ajax.reload();
+                        if (typeof trashTable === 'undefined') {
+                        } else {
+                            trashTable.ajax.reload();
+                        }
+                    })
+                @endforeach
             @endif
         })
 

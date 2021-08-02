@@ -11,7 +11,8 @@
 
         {{-- On create new resource --}}
 
-        {!! Form::open(['data-remote', 'url' => route($routeName.'.store'),
+        {!! Form::open(['data-remote', 
+            'url'                         => route($routeName.'.store'),
             'data-remote-confirm-title'   => __('admin.confirm_save_title'),
             'data-remote-confirm-message' => __('admin.confirm_save_message'),
             'data-remote-confirm-button'  => __('admin.save'),

@@ -105,8 +105,8 @@ var newUserForm = ''
  $.userDataTable = function (ajax, routeName ,columns, order, language = 'es') {
 
     statusObj = {
-      1: { title: 'Pending', class: 'badge-light-warning' },
-      2: { title: 'Active', class: 'badge-light-success' },
+      1: { title: 'Pending',  class: 'badge-light-warning' },
+      2: { title: 'Active',   class: 'badge-light-success' },
       3: { title: 'Inactive', class: 'badge-light-secondary' }
     };
 
@@ -131,7 +131,7 @@ var newUserForm = ''
         columnDefs: [
             {
                 // User full name and username
-                targets: 1,
+                targets: 0,
                 responsivePriority: 4,
                 render: function (data, type, object, meta) {
                     
@@ -182,7 +182,7 @@ var newUserForm = ''
             },
             {
                 // User Role
-                targets: 4,
+                targets: 3,
                 render: function (data, type, full, meta) {
 
                     var $role        = full['role'];
@@ -197,51 +197,25 @@ var newUserForm = ''
                   return "<span class='text-truncate align-middle'>" + roleBadgeObj[$role] + $role + '</span>';
                 }
             },
-            // {
-            //     // User Status
-            //     targets: 5,
-            //     render: function (data, type, full, meta) {
+            {
+                // User Status
+                targets: 4,
+                render: function (data, type, full, meta) {
 
-            //       var $status = full['status'];
-            //         return (
-            //             '<span class="badge badge-pill ' +
-            //             statusObj[$status].class +
-            //             '" text-capitalized>' +
-            //             statusObj[$status].title +
-            //             '</span>'
-            //         );
-            //     }
-            // },
-            // {
-            //     // Actions
-            //     targets: -1,
-            //     title: 'Actions',
-            //     orderable: false,
-            //     render: function (data, type, full, meta) {
-            //         return (
-            //             '<div class="btn-group">' +
-            //             '<a class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">' +
-            //             feather.icons['more-vertical'].toSvg({ class: 'font-small-4' }) +
-            //             '</a>' +
-            //             '<div class="dropdown-menu dropdown-menu-right">' +
-            //             '<a href="' +
-            //             userView +
-            //             '" class="dropdown-item">' +
-            //             feather.icons['file-text'].toSvg({ class: 'font-small-4 mr-50' }) +
-            //             'Details</a>' +
-            //             '<a href="' +
-            //             userEdit +
-            //             '" class="dropdown-item">' +
-            //             feather.icons['archive'].toSvg({ class: 'font-small-4 mr-50' }) +
-            //             'Edit</a>' +
-            //             '<a href="javascript:;" class="dropdown-item delete-record">' +
-            //             feather.icons['trash-2'].toSvg({ class: 'font-small-4 mr-50' }) +
-            //             'Delete</a></div>' +
-            //             '</div>' +
-            //             '</div>'
-            //         );
-            //     }
-            // }
+                    var $status = full['deleted_at'];
+                    if ($status == null) {
+                        var class_color = statusObj[2].class
+                        var title       = statusObj[2].title
+                    } else {
+                        var class_color = statusObj[3].class
+                        var title       = statusObj[3].title
+                    }
+
+                    return (
+                        '<span class="badge badge-pill ' + class_color + '" text-capitalized>' + title + '</span>'
+                    );
+                }
+            }
         ],
         language: getLanguage(language),
         dom:
@@ -358,6 +332,47 @@ $.setValidity = function(rules = '') {
 }
 
 /**
+ * bind buttons on action column datatables
+ * 
+ */
+$.bindActionButtons = function () {
+
+    $(document).on('click', '.btn-delete, .btn-restore', function(event) {
+        event.preventDefault()
+
+        let form = $(this).parents('form')
+        confirmAjaxRequest(form)
+    })
+
+    $(document).on('click', '.btn-edit', function(event) {
+        event.preventDefault()
+
+        let action = $(this).prop('href')
+
+        $.ajax({
+            url: action,
+            type: 'get',
+            data: {},
+            success: function (response) {
+                $.unblockUI()
+
+                if (response.error) {
+                    Swal.fire('Error', response.message, 'warning');
+                    return false;
+                }
+
+                $('#form-area').html('')
+                $('#form-area').html(response.form)
+                $('#modals-slide-in').modal('show')
+
+                $.setValidity()
+
+            }, error: catchError
+        })
+    })
+}
+
+/**
  * confirm submit ajax form sweet alert
  *
  * @param {*} show
@@ -424,6 +439,59 @@ $.setValidity = function(rules = '') {
         })
     })
 }
+
+/**
+ * call ajax with confirm ask request
+ * 
+ * @param {*} form 
+ */
+function confirmAjaxRequest(form) {
+
+    Swal.fire({
+        title: form.data('confirm-title'),
+        text: form.data('confirm-message'),
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: form.data('confirm-button')
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            $.ajax({
+                url: form.prop('action'),
+                type: form.prop('method'),
+                data: form.serialize(),
+                success: function (response) {
+                    $.unblockUI();
+
+                    if (response.error) {
+                        if (response.html) {
+                            Swal.fire({title: 'Error', html: response.html, icon: 'warning'})
+                            return false
+                        }
+
+                        Swal.fire('Error', response.message, 'warning')
+                        return false
+                    }
+
+                    Swal.fire('Ok!', form.data('success-message'), 'success')
+
+                    if (typeof simpleTable != 'undefined') {
+                        simpleTable.ajax.reload(function (json) {
+                            if (typeof trashTable !== 'undefined') {
+                                setTimeout(function () {
+                                    trashTable.ajax.reload(null, false);
+                                }, 500)
+                            }
+                        }, false)
+                    }
+
+                }, error: catchError
+            })
+        }
+    })
+} 
 
 // Check Validity
 function checkValidity(el) {

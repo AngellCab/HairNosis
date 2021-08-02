@@ -21,6 +21,7 @@ Route::get('angel', function() {
     echo "backend";
 });
 
+Route::post('users/restore/{id}', [UserController::class, 'restore'])->name('users.restore');
 Route::resource('users', UserController::class);
 
 Route::get('datatable/resources', [DataTableController::class, 'datatable'])->name('datatables.resource');
