@@ -29,15 +29,15 @@ use App\Http\Controllers\ChartsController;
 
 // Main Page Route
 // Route::get('/', [DashboardController::class,'dashboardEcommerce'])->name('dashboard-ecommerce')->middleware('verified');
-Route::get('/', [DashboardController::class,'dashboardEcommerce'])->name('dashboard-ecommerce');
+// Route::get('/', [DashboardController::class,'dashboardEcommerce'])->name('dashboard-ecommerce');
 
 Auth::routes(['verify' => true]);
 
 /* Route Dashboards */
-Route::group(['prefix' => 'dashboard'], function () {
-  Route::get('analytics', [DashboardController::class,'dashboardAnalytics'])->name('dashboard-analytics');
-  Route::get('ecommerce', [DashboardController::class,'dashboardEcommerce'])->name('dashboard-ecommerce');
-});
+// Route::group(['prefix' => 'dashboard'], function () {
+//   Route::get('analytics', [DashboardController::class,'dashboardAnalytics'])->name('dashboard-analytics');
+//   Route::get('ecommerce', [DashboardController::class,'dashboardEcommerce'])->name('dashboard-ecommerce');
+// });
 /* Route Dashboards */
 
 /* Route Apps */
@@ -220,7 +220,3 @@ Route::get('/maps/leaflet', [ChartsController::class,'maps_leaflet'])->name('map
 
 // locale Route
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
-
-Route::get('auth', function() {
-  echo "hello";
-})->middleware('auth');

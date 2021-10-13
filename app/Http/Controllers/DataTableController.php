@@ -31,7 +31,7 @@ class DataTableController extends Controller
             break;
             default:
                 return $this->{$this->routeName}($request);
-                break;
+            break;
         }
     }
 
@@ -58,6 +58,146 @@ class DataTableController extends Controller
             ->select('users.*', DB::raw('CONCAT("Maintainer") as role'))->get();
 
         $table = Datatables::of($users)
+            ->addColumn('actions', function($query) {
+                
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
+
+    public function permissions($request) { 
+        
+        $permissions = DB::table('permissions')->select('*')->get();
+        $table = Datatables::of($permissions)
+            ->addColumn('actions', function($query) {
+
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
+
+    public function roles($request) { 
+        
+        $roles = DB::table('roles')->select('*')->get();
+        $table = Datatables::of($roles)
+            ->addColumn('actions', function($query) {
+
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
+
+    public function companies($request) { 
+        
+        $companies = DB::table('companies')->select('*')->get();
+        $table = Datatables::of($companies)
+            ->addColumn('actions', function($query) {
+
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
+
+    public function locations($request) { 
+        
+        $locations = DB::table('locations')->select('*')->get();
+        $table     = Datatables::of($locations)
+            ->addColumn('actions', function($query) {
+
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
+
+    public function products($request) {
+
+        $products = DB::table('products')->select('*')->get();
+        $table    = Datatables::of($products)
+            ->addColumn('actions', function($query) {
+
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
+
+    public function services($request)  {
+
+        $services = DB::table('services')->select('*')->get();
+        $table    = Datatables::of($services)
+            ->addColumn('actions', function($query) {
+                
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
+
+    public function clients($request) {
+
+        $clients = DB::table('clients')->select('*')->get();
+        $table   = Datatables::of($clients)
             ->addColumn('actions', function($query) {
                 
                 $buttons = ['show', 'edit', 'delete'];

@@ -10,7 +10,7 @@
 
   {{-- Include Navbar --}}
   @include('panels.navbar')
-
+  
   <!-- BEGIN: Content-->
   <div class="app-content content {{ $configData['pageClass'] }}">
     <!-- BEGIN: Header-->

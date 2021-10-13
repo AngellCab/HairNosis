@@ -40,4 +40,31 @@ class Controller extends BaseController
 
         return null;
     }
+
+    /**
+     * Basic response success
+     * 
+     * @param $data
+     */
+    public function return_success($message = '', $data = null) : \Illuminate\Http\JsonResponse
+    {
+        return response()->json([
+            'error'   => false,
+            'message' => $message,
+            'data'    => $data
+        ]);
+    }
+
+    /**
+     * Basic error response
+     * 
+     * @param $message
+     */
+    public function return_error($message) : \Illuminate\Http\JsonResponse
+    {
+        return response()->json([
+            'error'   => true,
+            'message' => $message
+        ]);
+    }
 }

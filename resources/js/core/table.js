@@ -10,16 +10,7 @@ var newUserForm = ''
  * @param {*} order
  * @param {*} language
  */
- $.dataTable = function (route, columns, order, language = 'es') {
-
-    var dtUserTable = $('.user-list-table'),
-    newUserSidebar  = $('.new-user-modal'),
-    newUserForm     = $('.add-new-user'),
-    statusObj       = {
-      1: { title: 'Pending', class: 'badge-light-warning' },
-      2: { title: 'Active', class: 'badge-light-success' },
-      3: { title: 'Inactive', class: 'badge-light-secondary' }
-    };
+ $.dataTable = function (ajax, routeName, columns, order, language = 'es') {
 
     var assetPath = '../../../app-assets/',
     userView      = 'app-user-view.html',
@@ -35,7 +26,7 @@ var newUserForm = ''
         processing: true,
         serverSide: true,
         searchDelay: 250,
-        ajax: route,
+        ajax: ajax,
         columns: columns,
         pageLength: 25,
         order: order,
@@ -49,17 +40,43 @@ var newUserForm = ''
             '<"col-sm-12 col-md-6"i>' +
             '<"col-sm-12 col-md-6"p>' +
             '>',
-
         buttons: [
             {
-                text: 'Add New User',
+                text: 'Add new',
                 className: 'add-new btn btn-primary mt-50',
                 attr: {
-                'data-toggle': 'modal',
-                'data-target': '#modals-slide-in'
+                    // 'data-toggle': 'modal',
+                    // 'data-target': '#modals-slide-in'
                 },
                 init: function (api, node, config) {
-                $(node).removeClass('btn-secondary');
+                    $(node).removeClass('btn-secondary');
+
+                    $(node).on('click', function(event) {
+                        event.preventDefault()
+
+                        console.log('click')
+
+                        $.ajax({
+                            url: routeName + '/create',
+                            type: 'get',
+                            data: {},
+                            success: function (response) {
+                                $.unblockUI()
+                
+                                if (response.error) {
+                                    Swal.fire('Error', response.message, 'warning');
+                                    return false;
+                                }
+   
+                                $('#form-area').html('')
+                                $('#form-area').html(response.form)
+                                $('#modals-slide-in').modal('show')
+
+                                $.setValidity()
+                                                        
+                            }, error: catchError
+                        })
+                    })
                 }
             }
         ],

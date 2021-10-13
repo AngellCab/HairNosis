@@ -57,7 +57,7 @@
         <!-- <form class="add-new-user modal-content pt-0"> -->
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
             <div class="modal-header mb-1">
-                <h5 class="modal-title" id="exampleModalLabel">New User</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{{ __('messages.new_record') }}</h5>
             </div>
           
             <div class="modal-body flex-grow-1" id="form-area"></div>

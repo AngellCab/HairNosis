@@ -43,6 +43,7 @@ $configData = Helper::applClasses();
     </ul>
   </div>
   <div class="shadow-bottom"></div>
+
   <div class="main-menu-content">
     <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
       {{-- Foreach menu item starts --}}

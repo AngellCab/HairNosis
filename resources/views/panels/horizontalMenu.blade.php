@@ -35,6 +35,7 @@ $configData = Helper::applClasses();
       </ul>
     </div>
     <div class="shadow-bottom"></div>
+    <pre>{{ print_r($menuData) }}</pre>
     <!-- Horizontal menu content-->
     <div class="navbar-container main-menu-content" data-menu="menu-container">
       <ul class="nav navbar-nav" id="main-menu-navigation" data-menu="menu-navigation">
