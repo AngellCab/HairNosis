@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use App\Http\Requests\PermissionRequest;
 use App\Models\Permission;
 
 class PermissionController extends Controller
@@ -51,7 +52,7 @@ class PermissionController extends Controller
         ];
 
         $orderstring = "[[0,'desc']]";
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring'));
     }
@@ -63,11 +64,11 @@ class PermissionController extends Controller
      */
     public function create(Request $request)
     {
-        $formAction = 'create';
+        $formAction       = 'create';
         $submitButtonText = __('admin.create');
-        $form  = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
+        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
         
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -78,7 +79,7 @@ class PermissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PermissionRequest $request)
     {
         // Get the request parameters
         Permission::create($request->all());
@@ -99,7 +100,7 @@ class PermissionController extends Controller
         $url              = route($this->routeName.'.update', $permission->id);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -126,7 +127,7 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission, Request $request) {
         
-        //this->gateCheck($request);
+        $this->gateCheck($request);
         $permission->delete();
     }
 
@@ -139,7 +140,7 @@ class PermissionController extends Controller
      */
     public function restore($id, Request $request) {
 
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
         $permission = Permission::withTrashed()->findOrFail($id);
         $permission->restore();
 

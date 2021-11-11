@@ -65,6 +65,16 @@
           </div>
 
           <div class="form-group">
+            <label for="register-phone" class="form-label">Phone</label>
+            <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="register-phone" name="phone" placeholder="(998) .." aria-describedby="register-phone" tabindex="2" value="{{ old('phone') }}" />
+            @error('name')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+
+          <div class="form-group">
             <label for="register-password" class="form-label">Password</label>
 
             <div class="input-group input-group-merge form-password-toggle @error('password') is-invalid @enderror">
@@ -91,12 +101,60 @@
             </div>
           </div>
 
+          <hr/>
+          <h4>Datos de Empresa</h4>
+
+          <div class="form-group">
+            <label for="register-company-name" class="form-label">Company Name</label>
+            <input type="text" class="form-control @error('company_name') is-invalid @enderror" id="register-company-name" name="company_name" placeholder="devtzal" aria-describedby="register-company-name" tabindex="2" value="{{ old('company_name') }}" />
+            @error('name')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+
+          <div class="form-group">
+            <label for="register-address" class="form-label">Company Address</label>
+            <input type="text" class="form-control @error('address') is-invalid @enderror" id="register-address" name="address" placeholder="CP 77534 Col. Madero 54 .." aria-describedby="register-address" tabindex="2" value="{{ old('address') }}" />
+            @error('name')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+
+          <div class="form-group">
+            <label for="register-company-phone" class="form-label">Company Phone</label>
+            <input type="text" class="form-control @error('address') is-invalid @enderror" id="register-company-phone" name="company_phone" placeholder="tel.." aria-describedby="register-company-phone" tabindex="2" value="{{ old('company_phone') }}" />
+            @error('name')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+
+          <div class="form-group">
+            <label for="register-company-email" class="form-label">Company Email</label>
+            <input type="text" class="form-control @error('address') is-invalid @enderror" id="register-company-email" name="company_email" placeholder="devtzal@example.com" aria-describedby="register-company-email" tabindex="2" value="{{ old('company_email') }}" />
+            @error('name')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+
           <div class="form-group">
             <div class="custom-control custom-checkbox">
-              <input class="custom-control-input" type="checkbox" id="register-privacy-policy" tabindex="4" />
-              <label class="custom-control-label" for="register-privacy-policy">
+              <input class="custom-control-input" type="checkbox" id="register-privacy-policy" name="policies" tabindex="4" />
+              <label class="custom-control-label @error('policies') is-invalid @enderror" for="register-privacy-policy">
                 I agree to <a href="javascript:void(0);">privacy policy & terms</a>
               </label>
+              @error('policies')
+                <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                </span>
+              @enderror
             </div>
           </div>
           <button type="submit" class="btn btn-primary btn-block" tabindex="5">Sign up</button>

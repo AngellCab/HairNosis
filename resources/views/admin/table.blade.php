@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', __('titles.users'))
+@section('title', __($title))
 
 @section('vendor-style')
   {{-- Page Css files --}}
@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-validation.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('css/base/pages/app-user.css')) }}">
 @endsection
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 @section('content')
 
@@ -83,6 +85,7 @@
 @section('page-script')
     {{-- Page js files --}}
     <!-- <script src="{{ asset(mix('js/scripts/pages/app-user-list.js')) }}"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset(mix('js/core/table.js')) }}"></script>
     <script type="application/javascript">
         

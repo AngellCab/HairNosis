@@ -55,7 +55,10 @@ class Role extends Model
     public function assignPermissions($permission_list) {
 
         if (!is_null($permission_list)) {
-            $pivotData = array_fill(0, count($permission_list), ['modby' => Auth::id()]);
+            $pivotData = array_fill(0, count($permission_list), [
+                'modby'     => Auth::id(), 
+                'createdby' => Auth::id()
+            ]);
             $syncData  = array_combine($permission_list, $pivotData);
 
             $this->permissions()->sync($syncData);

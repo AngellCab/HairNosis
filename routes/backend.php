@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\InitializeController;
+use App\Http\Controllers\Admin\StylistController;
 use App\Http\Controllers\DashboardController;
 
 /*
@@ -54,6 +56,10 @@ Route::resource('companies', CompanyController::class);
 Route::post('users/restore/{id}', [UserController::class, 'restore'])->name('users.restore');
 Route::resource('users', UserController::class);
 
+#User Routes
+Route::post('stylists/restore/{id}', [StylistController::class, 'restore'])->name('stylist.restore');
+Route::resource('stylists', StylistController::class);
+
 #Permission Routes
 Route::post('permissions/restore/{id}', [PermissionController::class, 'restore'])->name('permissions.restore');
 Route::resource('permissions', PermissionController::class);
@@ -63,3 +69,6 @@ Route::post('roles/restore/{id}', [RoleController::class, 'restore'])->name('rol
 Route::resource('roles', RoleController::class);
 
 Route::get('datatable/resources', [DataTableController::class, 'datatable'])->name('datatables.resource');
+
+Route::get('initialize',  [InitializeController::class, 'index'])->name('initialize.index');
+Route::post('initialize', [InitializeController::class, 'createFirstBranch'])->name('initialize.initialize');

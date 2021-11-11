@@ -54,8 +54,6 @@ var newUserForm = ''
                     $(node).on('click', function(event) {
                         event.preventDefault()
 
-                        console.log('click')
-
                         $.ajax({
                             url: routeName + '/create',
                             type: 'get',

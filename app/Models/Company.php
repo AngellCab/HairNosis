@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Location;
 
 class Company extends Model
 {
@@ -33,4 +34,13 @@ class Company extends Model
         'address',
         'owner_id',
     ];
+
+    /**
+     * Relation with locations table
+     * 
+     */
+    public function locations() {
+
+        return $this->hasMany(Location::class);
+    }
 }

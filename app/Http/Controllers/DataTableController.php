@@ -4,30 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use App\Roles;
+use Session;
 use DB;
 
 class DataTableController extends Controller
 {
     /**
      * Used to display action buttons on datatable;
+     * 
      */
     private $buttons = null;
 
     /**
      * route name
      * 
-     * 
      */
     protected $routeName;
 
     /**
      * Process information from model
+     * 
      */
     public function datatable(Request $request) {
 
         $this->routeName = $request->routeName;
         switch($this->routeName) {
-            case 'model':
+            case '':
             break;
             default:
                 return $this->{$this->routeName}($request);
@@ -211,6 +214,31 @@ class DataTableController extends Controller
                 return view('admin.actions', compact('buttons', 'id', 'routeName'));
             });
 
+        return $table->make(true);
+    }
+
+    public function stylists($request) {
+
+        $stylists = DB::table('users')
+            ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
+            ->where('role_user.company_id', Session::get('company_id'))
+            ->where('role_user.role_id',    Roles::STYLIST)
+            ->select('*')->get();
+
+        $table    = Datatables::of($stylists)
+            ->addColumn('actions', function($query) {
+
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+        
         return $table->make(true);
     }
 }

@@ -34,4 +34,9 @@ class Location extends Model
         'manager_id',
         'company_id'
     ];
+
+    public function scopeFromCompany($query) {
+
+        return $query->whereCompanyId(Session::get('company_id'));
+    }
 }

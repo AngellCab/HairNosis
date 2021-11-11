@@ -26,29 +26,28 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        //
 
-        // foreach($this->getPermissions() as $permission) {
-        //     Gate::define($permission->name, function ($user) use ($permission) {
-        //         return $user->hasRole($permission->roles);
-        //     });
-        // }
+        foreach($this->getPermissions() as $permission) {
+            Gate::define($permission->name, function ($user) use ($permission) {
+                return $user->hasRole($permission->roles);
+            });
+        }
 
-        // /** Restrict the permission catalog only for root */
-        // Gate::define('admin_permissions', function ($user) {
-        //     return $user->isRoot();
-        // });
+        /** Restrict the permission catalog only for root */
+        Gate::define('admin_permissions', function ($user) {
+            return $user->isRoot();
+        });
 
-        // //Bow before me for I am root
-        // Gate::before(function ($user, $ability) {
-        //     return $user->isRoot();
-        // });
+        //Bow before me for I am root
+        Gate::before(function ($user, $ability) {
+            return $user->isRoot();
+        });
 
-        // Gate::before(function($user, $ability) {
-        //     if ($ability != 'admin_permissions') {
-        //         return $user->isAdministrator();
-        //     }
-        // });
+        Gate::before(function($user, $ability) {
+            if ($ability != 'admin_permissions') {
+                return $user->isAdministrator();
+            }
+        });
     }
 
     protected function getPermissions() {

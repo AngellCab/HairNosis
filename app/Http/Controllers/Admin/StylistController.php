@@ -6,24 +6,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Models\User;
-use App\Models\Role;
-use App\Models\Company;
-use App\Models\Location;
-use Auth;
+use App\Roles;
+use Session;
 
-class UserController extends Controller
+class StylistController extends Controller
 {
     /**
      * Table prefix
      *
      * @var string
      */
-    protected $routeName = 'users';
+    protected $routeName = 'stylists';
 
     /**
      * Permission name
      */
-    protected $permissionName = 'admin.users';
+    protected $permissionName = 'admin.stylist';
 
     /**
      * Permission error
@@ -38,41 +36,28 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $title = 'admin.users';
+        $title = 'admin.stylists';
 
         $columnHeaders = [
             __('admin.name'),
             __('admin.email'),
             __('admin.phone'),
-            __('admin.roles'),
             __('admin.status'),
             __('admin.actions'),
         ];
 
         $columnArray = [
-            "{data: 'name',     name: 'name'},",
-            "{data: 'email',    name: 'email'},",
-            "{data: 'phone',    name: 'phone'},",
-            "{data: 'role',     name: 'role'},",
-            "{data: 'deleted_at',  name: 'deleted_at'},",            
-            "{data: 'actions',  name: 'actions', orderable: false, searchable: false}"
-        ];
-
-        $filters = [
-            [
-                'idname'      => 'status',
-                'label'       => __('admin.status'),
-                'width'       => 'col-md-4',
-                'listArray'   => ['active' => __('admin.active'), 'inactive' => __('admin.inactive')],
-                'placeholder' => __('admin.select_a_role'),
-                'datacall'    => "d.status = $('select[name=status]').val();",
-            ]
+            "{data: 'name',       name: 'name'},",
+            "{data: 'email',      name: 'email'},",
+            "{data: 'phone',      name: 'phone'},",
+            "{data: 'deleted_at', name: 'deleted_at'},",            
+            "{data: 'actions',    name: 'actions', orderable: false, searchable: false}"
         ];
 
         $orderstring = "[[0,'desc']]";
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
-        return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring', 'filters'));
+        return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring'));
     }
 
     /**
@@ -82,12 +67,11 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $formAction = 'create';
+        $formAction       = 'create';
         $submitButtonText = __('admin.create');
-        $roles = Role::pluck('name', 'id');
-        $form  = View::make('admin.patch', compact('submitButtonText', 'formAction', 'roles'))->render();
+        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -101,21 +85,29 @@ class UserController extends Controller
     public function store(Request $request)
     {
         #Create user
+        // $stylist = User::withTrashed()
+        //     ->firstOrNew($request->only(['email']), $request->only(['name', 'phone', 'password']));
+        
+        // #If user doesn´t exist
+        // if (!$styles->exists) {
+
+        //     $stylist->password = bcrypt($request->password);
+        //     $stylist->save();
+            
+        //     $company_id = Session::get('company_id');
+        //     $branch_id  = Session::get('branch_id');
+
+        //     $user->assignRoles($company_id, [$branch_id], [Roles::STYLIST]);
+        // }
+
+        #Create user
         $request['password'] = bcrypt($request->password);
         $user                = User::create($request->only(['name', 'email', 'phone', 'password']));
+    
+        $company_id = Session::get('company_id');
+        $branch_id  = Session::get('branch_id');
 
-        #Create new Company
-        $company = [
-            'name'     => $request->name_company, 
-            'address'  => $request->address, 
-            'phone'    => $request->phone_company,
-            'email'    => $request->email_company,
-            'owner_id' => $user->id
-        ];
-
-        #Assign location 0
-        $company = Company::create($company);
-        $user->assignRoles($company->id, [0], $request->input('role_list'));
+        $user->assignRoles($company_id, [$branch_id], [Roles::STYLIST]);
     }
 
     /**
@@ -132,9 +124,8 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  User $user
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
     public function edit(User $user, Request $request)
     {
@@ -144,7 +135,7 @@ class UserController extends Controller
         $url              = route($this->routeName.'.update', $user->id);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -156,7 +147,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
         // Get the request parameters
         $name        = $request->input('name');
@@ -167,12 +158,10 @@ class UserController extends Controller
  
         if (!empty($password)) {
             $password = bcrypt($password);
-            $user->update(compact('name', 'surname', 'email', 'password', 'phone'));
+            $user->update(compact('name', 'email', 'password', 'phone'));
         } else {
             $user->update($request->except('password'));
         }
-         
-        // $user->assignRoles($request->input('role_list'));
     }
 
     /**

@@ -55,6 +55,8 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\LocaleMiddleware::class,
             \App\Http\Middleware\Authenticate::class,
+            \App\Http\Middleware\Company::class,
+            \App\Http\Middleware\Branch::class,
         ],
     ];
 

@@ -29,6 +29,12 @@
         "slug": ""
       },
       {
+        "url": "stylists",
+        "name": "Stylist",
+        "icon": "user",
+        "slug": ""
+      },
+      {
         "url": "permissions",
         "name": "Permission",
         "icon": "user",

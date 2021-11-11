@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use App\Models\Location;
+use Session;
 use Auth;
 
 class LocationController extends Controller
@@ -37,7 +38,7 @@ class LocationController extends Controller
      */
     public function index(Request $request)
     {
-        $title = 'locations';
+        $title = 'admin.locations';
 
         $columnHeaders = [
             ' Id',
@@ -73,9 +74,9 @@ class LocationController extends Controller
      */
     public function create(Request $request)
     {
-        $formAction = 'create';
+        $formAction       = 'create';
         $submitButtonText = __('admin.create');
-        $form  = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
+        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
         
         // $this->gateCheck($request);
 
@@ -90,8 +91,17 @@ class LocationController extends Controller
      */
     public function store(Request $request)
     {
+        $manager_id = ($request->has('manager_id')) ? $request->manager_id : Auth::id();
+
         // Get the request parameters
-        Location::create($request->all());
+        Location::create([
+            'name'       => $request->name,
+            'address'    => $request->address,
+            'phone'      => $request->phone,
+            'email'      => $request->email,
+            'company_id' => Session::get('company_id'),
+            'manager_id' => $manager_id
+        ]);
     }
 
     /**
@@ -134,7 +144,7 @@ class LocationController extends Controller
      */
     public function update(Request $request, Location $location)
     {
-        $location->update($request->all());
+        $location->update($request->except(['company_id', 'manager_id']));
     }
 
     /**

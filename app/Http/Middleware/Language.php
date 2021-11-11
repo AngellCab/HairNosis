@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Session;
 use App;
 
-class LocaleMiddleware
+class Language
 {
 
     /**
@@ -35,7 +35,6 @@ class LocaleMiddleware
     {
         $this->default = env('APP_DEFAULT_LANG', 'es');
         $this->configLanguage();
-
         return $next($request);
     }
 

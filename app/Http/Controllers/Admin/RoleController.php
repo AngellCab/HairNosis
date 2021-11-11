@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+use App\Http\Requests\RoleRequest;
 use App\Models\Permission;
 use App\Models\Role;
 use Auth;
@@ -68,9 +69,11 @@ class RoleController extends Controller
      */
     public function create(Request $request)
     {
-        $formAction = 'create';
+        $formAction       = 'create';
         $submitButtonText = __('admin.create');
-        $form  = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
+        $permissions      = Permission::pluck('label', 'id');
+        $form = View::make('admin.patch', 
+            compact('submitButtonText', 'formAction', 'permissions'))->render();
         
         // $this->gateCheck($request);
 
@@ -83,10 +86,11 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoleRequest $request)
     {
         // Get the request parameters
-        Role::create($request->all());
+        $role = Role::create($request->all());
+        $role->assignPermissions($request->permission_list);
     }
 
      /**
@@ -101,8 +105,9 @@ class RoleController extends Controller
         $formAction       = 'update';
         $submitButtonText = __('admin.update');
         $formModel        = $role;
+        $permissions      = Permission::pluck('label', 'id');
         $url              = route($this->routeName.'.update', $role->id);
-        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
+        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url', 'permissions'))->render();
         
         //$this->gateCheck($request);
 
@@ -120,6 +125,7 @@ class RoleController extends Controller
     {
         // Get the request parameters
         $role->update($request->all());
+        $role->assignPermissions($request->input('permission_list'));
     }
 
     /**

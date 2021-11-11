@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Company;
+use App\Roles;
 
 class RegisterController extends Controller
 {
@@ -50,9 +52,17 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name'     => ['required', 'string',  'max:255'],
+            'email'    => ['required', 'string',  'email', 'max:255', 'unique:users'],
+            'phone'    => ['required', 'numeric', 'unique:users'],
+            'password' => ['required', 'string',  'min:8', 'confirmed'],
+
+            #Company fields required
+            'company_name'  => ['required', 'string', 'max:255'],
+            'address'       => ['required', 'string', 'max:255'],
+            'company_phone' => ['required', 'numeric'],
+            'company_email' => ['required', 'string', 'email'],
+            'policies'      => ['accepted']
         ]);
     }
 
@@ -64,11 +74,28 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+        #Create new user
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'phone'    => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
+
+        #Create a new company
+        $company = Company::create([
+            'name'     => $data['company_name'], 
+            'address'  => $data['address'],
+            'phone'    => $data['company_phone'],
+            'email'    => $data['company_email'],
+            'owner_id' => $user->id
+        ]);
+
+        #Assign Role and location to this user
+        $locationDefault = 0;
+        $user->assignRoles($company->id, [$locationDefault], [Roles::OWNER]);
+
+        return $user;
     }
 
     // Register
@@ -77,7 +104,7 @@ class RegisterController extends Controller
         $pageConfigs = ['blankPage' => true];
 
         return view('/auth/register', [
-        'pageConfigs' => $pageConfigs
+            'pageConfigs' => $pageConfigs
         ]);
     }
 }
