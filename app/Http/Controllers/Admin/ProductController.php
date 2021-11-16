@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use Session;
 
 class ProductController extends Controller
 {
@@ -39,7 +41,7 @@ class ProductController extends Controller
         $columnHeaders = [
             __('admin.id'),
             __('admin.name'),
-            __('admin.brand_id'),
+            __('admin.brand'),
             __('admin.url_image'),
             __('admin.actions'),
         ];
@@ -53,7 +55,7 @@ class ProductController extends Controller
         ];
 
         $orderstring = "[[0,'desc']]";
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring'));
     }
@@ -67,9 +69,9 @@ class ProductController extends Controller
     {
         $formAction = 'create';
         $submitButtonText = __('admin.create');
-        $form  = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
+        $form = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
         
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -80,16 +82,21 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
         // Get the request parameters
-        Product::create($request->all());
+        Product::create([
+            'name'       => $request->name,
+            'brand_id'   => $request->input('brand_id', 0),
+            'company_id' => Session::get('company_id'),
+            'url_image'  => $request->url_image
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Permission $permission
+     * @param  Product $product
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -101,7 +108,7 @@ class ProductController extends Controller
         $url              = route($this->routeName.'.update', $product->id);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -113,10 +120,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request, Product $product)
     {
         // Get the request parameters
-        $product->update($request->all());
+        $product->update($request->except(['company_id', 'hash']));
     }
 
     /**
@@ -128,7 +135,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product, Request $request) {
         
-        //this->gateCheck($request);
+        $this->gateCheck($request);
         $product->delete();
     }
 
@@ -141,7 +148,7 @@ class ProductController extends Controller
      */
     public function restore($id, Request $request) {
 
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
         $product = Product::withTrashed()->findOrFail($id);
         $product->restore();
 

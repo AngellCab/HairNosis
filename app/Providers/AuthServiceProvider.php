@@ -34,19 +34,13 @@ class AuthServiceProvider extends ServiceProvider
         }
 
         /** Restrict the permission catalog only for root */
-        Gate::define('admin_permissions', function ($user) {
+        Gate::define('admin.permissions', function ($user) {
             return $user->isRoot();
         });
 
         //Bow before me for I am root
         Gate::before(function ($user, $ability) {
             return $user->isRoot();
-        });
-
-        Gate::before(function($user, $ability) {
-            if ($ability != 'admin_permissions') {
-                return $user->isAdministrator();
-            }
         });
     }
 

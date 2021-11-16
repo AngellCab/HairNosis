@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Location;
+use App\Models\User;
+use App\Roles;
+use Session;
 use Auth;
 
 class ClientController extends Controller
@@ -41,11 +45,11 @@ class ClientController extends Controller
 
         $columnHeaders = [
             ' Id',
-            __('nicenames.name'),
-            __('nicenames.phone'),
-            __('nicenames.email'),
-            __('nicenames.location'),
-            __('nicenames.stylist'),
+            __('admin.name'),
+            __('admin.phone'),
+            __('admin.email'),
+            __('admin.location'),
+            __('admin.stylist'),
             __('controllers.actions')
         ];
 
@@ -61,7 +65,7 @@ class ClientController extends Controller
 
         $orderstring = "[[0,'desc']]";
 
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring'));
     }
@@ -73,11 +77,13 @@ class ClientController extends Controller
      */
     public function create(Request $request)
     {
-        $formAction = 'create';
+        $formAction       = 'create';
         $submitButtonText = __('admin.create');
-        $form  = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
+        $locations        = Location::whereCompanyId(Session::get('company_id'))->pluck('name', 'id');
+        $stylists         = User::stylists()->pluck('name', 'hash');
+        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'locations', 'stylists'))->render();
         
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -91,6 +97,10 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         // Get the request parameters
+
+        $stylists            = User::where('hash', $request->stylist_id)->first();
+        $request['stylist_id'] = $stylists->id;
+
         Client::create($request->all());
     }
 
@@ -109,7 +119,7 @@ class ClientController extends Controller
         $url              = route($this->routeName.'.update', $client->id);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -136,7 +146,7 @@ class ClientController extends Controller
      */
     public function destroy(Client $client, Request $request) {
         
-        //this->gateCheck($request);
+        $this->gateCheck($request);
         $client->delete();
     }
 
@@ -149,7 +159,7 @@ class ClientController extends Controller
      */
     public function restore($id, Request $request) {
 
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
         $client = Client::withTrashed()->findOrFail($id);
         $client->restore();
 

@@ -4,7 +4,8 @@ namespace App;
 
 abstract class Roles {
 
-    const OWNER   = 1;
-    const ADMIN   = 2;
-    const STYLIST = 3;
+    const SUPERADMIN = 1;
+    const ADMIN      = 2;
+    const MANAGER    = 3;
+    const STYLIST    = 4;
 }

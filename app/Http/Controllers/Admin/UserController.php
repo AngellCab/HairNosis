@@ -70,7 +70,8 @@ class UserController extends Controller
         ];
 
         $orderstring = "[[0,'desc']]";
-        // $this->gateCheck($request);
+
+        $this->gateCheck($request);
 
         return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring', 'filters'));
     }
@@ -87,7 +88,7 @@ class UserController extends Controller
         $roles = Role::pluck('name', 'id');
         $form  = View::make('admin.patch', compact('submitButtonText', 'formAction', 'roles'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -142,9 +143,10 @@ class UserController extends Controller
         $submitButtonText = __('admin.update');
         $formModel        = $user;
         $url              = route($this->routeName.'.update', $user->id);
-        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
+        $roles            = Role::pluck('name', 'id');
+        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url', 'roles'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -171,8 +173,8 @@ class UserController extends Controller
         } else {
             $user->update($request->except('password'));
         }
-         
-        // $user->assignRoles($request->input('role_list'));
+
+        // $user->assignRoles($user->company->id, $request->input('location_list'), $request->input('role_list'));
     }
 
     /**

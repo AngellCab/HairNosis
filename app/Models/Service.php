@@ -33,6 +33,7 @@ class Service extends Model
         'redken_products',
         'loreal_products',
         'kerestase_products',
-        'treatments'
+        'treatments',
+        'hash'
     ];
 }

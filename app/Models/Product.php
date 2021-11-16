@@ -30,5 +30,7 @@ class Product extends Model
         'name',
         'brand_id',
         'url_image',
+		'company_id',
+		'hash'
     ];
 }

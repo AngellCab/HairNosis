@@ -31,7 +31,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/initialize'; //RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -93,7 +93,7 @@ class RegisterController extends Controller
 
         #Assign Role and location to this user
         $locationDefault = 0;
-        $user->assignRoles($company->id, [$locationDefault], [Roles::OWNER]);
+        $user->assignRoles($company->id, [$locationDefault], [Roles::ADMIN]);
 
         return $user;
     }

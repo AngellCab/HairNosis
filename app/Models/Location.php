@@ -32,7 +32,8 @@ class Location extends Model
         'email',
         'address',
         'manager_id',
-        'company_id'
+        'company_id',
+        'hash'
     ];
 
     public function scopeFromCompany($query) {

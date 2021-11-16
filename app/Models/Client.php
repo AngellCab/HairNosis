@@ -31,6 +31,7 @@ class Client extends Model
         'phone',
         'email',
         'location_id',
-        'stylist_id'
+        'stylist_id',
+        'hash'
     ];
 }

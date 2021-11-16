@@ -31,9 +31,9 @@ class Branch
         }
 
         $company  = Auth::user()->company->first();
-        $branches = $company->locations->pluck('id')->toArray();
+        $branches = $company->locations;
 
-        if (Session::has('branch_id') && in_array(Session::get('branch_id'), $branches)) {
+        if (Session::has('branch_id') && in_array(Session::get('branch_id'), $branches->pluck('id')->toArray())) {
             Session::put('branch_id', Session::get('branch_id'));
         } else {
 

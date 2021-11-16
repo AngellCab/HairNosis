@@ -23,7 +23,8 @@ class LocationController extends Controller
      *
      * @var string
      */
-    protected $permissionName = 'admin.locations';
+    protected $permissionName = 'admin.branches';
+    
     /**
      * Error message when auth fails
      *
@@ -46,7 +47,6 @@ class LocationController extends Controller
             __('nicenames.phone'),
             __('nicenames.email'),
             __('nicenames.address'),
-            __('nicenames.company'),
             __('controllers.actions'),
         ];
 
@@ -56,13 +56,12 @@ class LocationController extends Controller
             "{data: 'phone',      name: 'phone'},",
             "{data: 'email',      name: 'email'},",
             "{data: 'address',    name: 'address'},",
-            "{data: 'company_id', name: 'company'},",
             "{data: 'actions',    name: 'action', orderable: false, searchable: false, class:'text-center'}"
         ];
 
         $orderstring = "[[0,'desc']]";
 
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring'));
     }
@@ -78,7 +77,7 @@ class LocationController extends Controller
         $submitButtonText = __('admin.create');
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
         
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -130,7 +129,7 @@ class LocationController extends Controller
         $url              = route($this->routeName.'.update', $location->id);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -156,7 +155,7 @@ class LocationController extends Controller
      */
     public function destroy(Location $location, Request $request)
     {
-        //this->gateCheck($request);
+        $this->gateCheck($request);
         $location->delete();
     }
 
@@ -169,7 +168,7 @@ class LocationController extends Controller
      */
     public function restore($id, Request $request) {
 
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
         $location = Location::withTrashed()->findOrFail($id);
         $location->restore();
 

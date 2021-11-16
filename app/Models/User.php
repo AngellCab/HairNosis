@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\HasRoles;
+use App\Roles;
+use Session;
 use Auth;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -24,7 +26,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'phone',
-        'view_report'
+        'view_report',
+        'hash'
     ];
 
     /**
@@ -132,5 +135,70 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getCompanyListAttribute() {
         
         return $this->companies->pluck('id')->all();
+    }
+
+    /**
+     * Role SUPERADMIN
+     * 
+     * @return Boolean isSuperAdmin
+     */
+    public function isSuperAdmin() {
+
+        if ($this->hasRole('super_admin') || $this->isRoot()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Role ADMIN
+     * 
+     * @return Boolean isAdmin
+     */
+    public function isAdmin() {
+
+        if ($this->hasRole('admin')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Role MANAGER
+     * 
+     * @return Boolean isManager
+     */
+    public function isManager() {
+
+        if ($this->hasRole('manager')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Role STYLIST
+     * 
+     * @return Boolean isStylist
+     */
+    public function isStylist() {
+
+        if ($this->hasRole('stylist')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function scopeStylists($query) {
+
+        return $query->whereHas('roles', function($query) {
+            $query->where('id', Roles::STYLIST);
+        })->whereHas('company', function($query) {
+            $query->where('id', Session::get('company_id'));
+        });
     }
 }

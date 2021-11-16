@@ -59,7 +59,7 @@ class CompanyController extends Controller
 
         $orderstring = "[[0,'desc']]";
 
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring'));
     }
@@ -75,7 +75,7 @@ class CompanyController extends Controller
         $submitButtonText = __('admin.create');
         $form  = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
         
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -107,7 +107,7 @@ class CompanyController extends Controller
         $url              = route($this->routeName.'.update', $company->id);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -134,7 +134,7 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company, Request $request) {
         
-        //this->gateCheck($request);
+        $this->gateCheck($request);
         $company->delete();
     }
 
@@ -147,7 +147,7 @@ class CompanyController extends Controller
      */
     public function restore($id, Request $request) {
 
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
         $company = Company::withTrashed()->findOrFail($id);
         $company->restore();
 

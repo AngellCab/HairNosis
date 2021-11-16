@@ -1,17 +1,17 @@
 
 <div class="form-group">
     {!! Form::label('name', __('admin.name'), ['class' => 'form-label']) !!}
-    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Jhon Doe', 'aria-label' => 'admin.permission', 'aria-describedby' => 'basic-icon-default-fullname', 'required']) !!}
+    {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('brand_id', __('admin.brand_id'), ['class' => 'form-brand_id']) !!}
-    {!! Form::number('brand_id', null, ['class' => 'form-control', 'placeholder' => 'Permission brand_id', 'aria-describedby' => 'basic-icon-default-brand_id2', 'required']) !!}
+    {!! Form::label('brand_id', __('admin.brand'), ['class' => 'form-label']) !!}
+    {!! Form::select('brand_id', [1 =>  'N/A', 2 => 'Redken', 3 => 'Loreal', 4 => 'Kerestase'], null, ['class' => 'form-control', 'required']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('url_image', __('admin.url_image'), ['class' => 'form-label']) !!}
-    {!! Form::tel('url_image', null, ['class' => 'form-control', 'placeholder' => '...', 'aria-label' => '...', 'aria-describedby' => 'basic-icon-default-url_image']) !!}
+    {!! Form::label('url_image', __('admin.image'), ['class' => 'form-label']) !!}
+    {!! Form::tel('url_image', null, ['class' => 'form-control']) !!}
 </div>
 
 <button type="submit" class="btn btn-primary mr-1 data-submit">{{ $submitButtonText }}</button>

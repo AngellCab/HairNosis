@@ -11,11 +11,11 @@ trait HasRoles {
      *
      */
     public function hasRole($role) {
-        if (is_string( $role )) {
-            return $this->roles->contains( 'name', $role );
+        if (is_string($role)) {
+            return $this->roles->contains('name',$role);
         }
         
-        return ! ! $role->intersect( $this->roles )->count();
+        return ! ! $role->intersect($this->roles)->count();
     }
 
     public function assignRole($role) {
@@ -25,7 +25,7 @@ trait HasRoles {
     }
 
     public function isRoot() {
-        if ($this->id == 1 || $this->email == 'cabangel308@gmail.com' || $this->email == "efrenpech@devtzal.com") {
+        if ($this->id == 1) {
             return true;
         }
     }

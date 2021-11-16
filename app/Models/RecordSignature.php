@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Auth;
 
 trait RecordSignature 
@@ -14,6 +16,10 @@ trait RecordSignature
             if (Auth::check()) {
                 $model->modby     = Auth::id();
                 $model->createdby = Auth::id();
+            }
+
+            if(Schema::hasColumn($model->getTable(), 'hash')) {
+                self::assignHash($model);
             }
         });
 
@@ -45,5 +51,15 @@ trait RecordSignature
     public function createdByUser() {
 
         return $this->belongsTo('App\Models\User', 'modby', 'id');
+    }
+
+    /**
+     * Assign has on create user object
+     * 
+     * @param Eloquent $model
+     */
+    public static function assignHash($model) {
+
+        $model->hash = Str::random(24);
     }
 }

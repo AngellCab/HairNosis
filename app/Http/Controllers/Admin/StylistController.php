@@ -21,7 +21,7 @@ class StylistController extends Controller
     /**
      * Permission name
      */
-    protected $permissionName = 'admin.stylist';
+    protected $permissionName = 'admin.stylists';
 
     /**
      * Permission error
@@ -55,6 +55,7 @@ class StylistController extends Controller
         ];
 
         $orderstring = "[[0,'desc']]";
+
         $this->gateCheck($request);
 
         return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring'));
@@ -85,22 +86,6 @@ class StylistController extends Controller
     public function store(Request $request)
     {
         #Create user
-        // $stylist = User::withTrashed()
-        //     ->firstOrNew($request->only(['email']), $request->only(['name', 'phone', 'password']));
-        
-        // #If user doesn´t exist
-        // if (!$styles->exists) {
-
-        //     $stylist->password = bcrypt($request->password);
-        //     $stylist->save();
-            
-        //     $company_id = Session::get('company_id');
-        //     $branch_id  = Session::get('branch_id');
-
-        //     $user->assignRoles($company_id, [$branch_id], [Roles::STYLIST]);
-        // }
-
-        #Create user
         $request['password'] = bcrypt($request->password);
         $user                = User::create($request->only(['name', 'email', 'phone', 'password']));
     
@@ -127,12 +112,12 @@ class StylistController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user, Request $request)
+    public function edit(User $stylist, Request $request)
     {
         $formAction       = 'update';
         $submitButtonText = __('admin.update');
-        $formModel        = $user;
-        $url              = route($this->routeName.'.update', $user->id);
+        $formModel        = $stylist;
+        $url              = route($this->routeName.'.update', $stylist->id);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
         
         $this->gateCheck($request);

@@ -43,21 +43,21 @@ class RoleController extends Controller
 
         $columnHeaders = [
             ' Id',
-            __('nicenames.name'),
-            __('nicenames.label'),
+            __('admin.label'),
+            __('admin.name'),
             __('controllers.actions'),
         ];
 
         $columnArray = [
-            "{data: 'id', name: 'id'},",
-            "{data: 'name', name: 'name'},",
-            "{data: 'label', name: 'label'},",
+            "{data: 'id',      name: 'id'},",
+            "{data: 'label',   name: 'label'},",
+            "{data: 'name',    name: 'name'},",
             "{data: 'actions', name: 'action', orderable: false, searchable: false, class:'text-center'}"
         ];
 
         $orderstring = "[[0,'desc']]";
 
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return view('admin.table', compact('title', 'columnArray', 'columnHeaders', 'orderstring'));
     }
@@ -75,7 +75,7 @@ class RoleController extends Controller
         $form = View::make('admin.patch', 
             compact('submitButtonText', 'formAction', 'permissions'))->render();
         
-        // $this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -109,7 +109,7 @@ class RoleController extends Controller
         $url              = route($this->routeName.'.update', $role->id);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url', 'permissions'))->render();
         
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
     }
@@ -137,7 +137,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role, Request $request) {
         
-        //this->gateCheck($request);
+        $this->gateCheck($request);
         $role->delete();
     }
 
@@ -150,7 +150,7 @@ class RoleController extends Controller
      */
     public function restore($id, Request $request) {
 
-        //$this->gateCheck($request);
+        $this->gateCheck($request);
         $role = Role::withTrashed()->findOrFail($id);
         $role->restore();
 

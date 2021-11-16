@@ -39,15 +39,15 @@ class PermissionController extends Controller
 
         $columnHeaders = [
             __('admin.id'),
-            __('admin.name'),
             __('admin.label'),
+            __('admin.name'),
             __('admin.actions'),
         ];
 
         $columnArray = [
             "{data: 'id',       name: 'id'},",
-            "{data: 'name',     name: 'name'},",
-            "{data: 'label',    name: 'label'},",         
+            "{data: 'label',    name: 'label'},",
+            "{data: 'name',     name: 'name'},",         
             "{data: 'actions',  name: 'actions', orderable: false, searchable: false}"
         ];
 

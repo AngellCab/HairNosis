@@ -33,6 +33,7 @@ class Company extends Model
         'email',
         'address',
         'owner_id',
+        'hash'
     ];
 
     /**

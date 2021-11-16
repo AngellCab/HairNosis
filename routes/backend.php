@@ -32,33 +32,37 @@ Route::group(['prefix' => 'dashboard'], function () {
     Route::get('ecommerce', [DashboardController::class,'dashboardEcommerce'])->name('dashboard-ecommerce');
 });
 
-#Clients Routes
-Route::post('clients/restore/{id}', [ClientController::class, 'restore'])->name('clients.restore');
-Route::resource('clients', ClientController::class);
+#Protect routes
+Route::group(['middleware' => 'initialize'], function()  {
+    
+    #Products Routes
+    Route::post('products/restore/{id}', [ProductController::class, 'restore'])->name('products.restore');
+    Route::resource('products', ProductController::class);
 
-#Services Routes
-Route::post('services/restore/{id}', [ServiceController::class, 'restore'])->name('services.restore');
-Route::resource('services', ServiceController::class);
+    #Clients Routes
+    Route::post('clients/restore/{id}', [ClientController::class, 'restore'])->name('clients.restore');
+    Route::resource('clients', ClientController::class);
 
-#Products Routes
-Route::post('products/restore/{id}', [ProductController::class, 'restore'])->name('products.restore');
-Route::resource('products', ProductController::class);
+    #Services Routes
+    Route::post('services/restore/{id}', [ServiceController::class, 'restore'])->name('services.restore');
+    Route::resource('services', ServiceController::class);
 
-#Companies Routes
-Route::post('locations/restore/{id}', [LocationController::class, 'restore'])->name('locations.restore');
-Route::resource('locations', LocationController::class);
+    #User Routes
+    Route::post('stylists/restore/{id}', [StylistController::class, 'restore'])->name('stylist.restore');
+    Route::resource('stylists', StylistController::class);
+});
 
 #Companies Routes
 Route::post('companies/restore/{id}', [CompanyController::class, 'restore'])->name('companies.restore');
 Route::resource('companies', CompanyController::class);
 
+#Locations Routes
+Route::post('locations/restore/{id}', [LocationController::class, 'restore'])->name('locations.restore');
+Route::resource('locations', LocationController::class);
+
 #User Routes
 Route::post('users/restore/{id}', [UserController::class, 'restore'])->name('users.restore');
 Route::resource('users', UserController::class);
-
-#User Routes
-Route::post('stylists/restore/{id}', [StylistController::class, 'restore'])->name('stylist.restore');
-Route::resource('stylists', StylistController::class);
 
 #Permission Routes
 Route::post('permissions/restore/{id}', [PermissionController::class, 'restore'])->name('permissions.restore');
