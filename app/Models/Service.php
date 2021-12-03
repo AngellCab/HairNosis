@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\ClientHelper;
 
 class Service extends Model
 {
@@ -28,6 +29,7 @@ class Service extends Model
 	 */
     protected $fillable = [
         'client_id',
+        'location_id',
         'formula',
         'apply_date',
         'redken_products',
@@ -36,4 +38,24 @@ class Service extends Model
         'treatments',
         'hash'
     ];
+
+    /**
+     * Relation with stylist helpers
+     * 
+     * 
+     */
+    public function stylistHelpers() {
+
+        return $this->hasMany(ClientHelper::class, 'client_id');
+    }
+
+    /**
+     * Relation with stylist helpers
+     * 
+     * 
+     */
+    public function stylistHelpersDeleted() {
+
+        return $this->hasMany(ClientHelper::class, 'client_id')->withTrashed();
+    }
 }

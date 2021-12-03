@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\Location;
+use App\Models\Client;
 use App\Roles;
 use Session;
 use Auth;
@@ -235,6 +236,34 @@ class DataTableController extends Controller
         
         $services = DB::table('services')->whereIn('location_id', $branches)->select('*')->get();
         $table    = Datatables::of($services)
+            ->editColumn('client_id', function($query) {
+                $client = Client::find($query->client_id);
+                return $client->name;
+            })
+            ->editColumn('treatments', function($query) {
+
+                $treatments = [
+                    '0' => 'Ninguno',
+                    '1' => 'Power Mix',
+                    '2' => 'Brazilian Blow Out',
+                    '3' => 'Shampoo Sencillo',
+                    '4' => 'Inoar Keratina',
+                    '5' => 'X-Tenso',
+                    '6' => 'Chemistry',
+                    '7' => 'PH Bonder',
+                    '8' => 'Heat Cure',
+                    '9' => 'Aura Botanica: Brillo saludable y natural',
+                    '10' => 'Elixir Ultime: Brillo sublime',
+                    '11' => 'Chronologiste: Regeneración',
+                    '12' => 'Desintoxicación del cabello: Ritual purificante',
+                    '13' => 'Protocolo para eliminar caspa',
+                    '14' => 'Ritual para eliminar la pérdida del cabello',
+                    '15' => 'Ritual Calmante para cuero cabelludo',
+                    '16' => 'Fusion Dose'
+                ];
+
+                return $treatments[$query->treatments];
+            })
             ->addColumn('actions', function($query) {
                 
                 $buttons = ['show', 'edit', 'delete'];

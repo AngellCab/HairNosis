@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Location extends Model
+class ClientHelper extends Model
 {
     /**
 	 * The database uses softDeletes.
@@ -27,26 +27,14 @@ class Location extends Model
 	 * @var array
 	 */
     protected $fillable = [
+        'client_id',
         'name',
-        'phone',
         'email',
-        'address',
-        'manager_id',
-        'company_id',
-        'hash'
+        'phone',
+        'location_id',
+        'stylist_id',
+        'type',
+        'type_id',
+        'status'
     ];
-
-    /**
-     * Relation with company
-     * 
-     */
-    public function company() {
-
-        return $this->belongsTo('App\Models\Company');
-    }
-
-    public function scopeFromCompany($query) {
-
-        return $query->whereCompanyId(Session::get('company_id'));
-    }
 }

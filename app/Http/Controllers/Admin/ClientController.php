@@ -116,8 +116,9 @@ class ClientController extends Controller
         $formAction       = 'update';
         $submitButtonText = __('admin.update');
         $formModel        = $client;
+        $stylists         = User::stylists()->pluck('name', 'hash');
         $url              = route($this->routeName.'.update', $client->id);
-        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
+        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url', 'stylists'))->render();
         
         $this->gateCheck($request);
 

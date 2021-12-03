@@ -34,4 +34,20 @@ class Client extends Model
         'stylist_id',
         'hash'
     ];
+
+    /**
+     * Relation with location table 
+     *
+     */
+    public function location() {
+
+        return $this->belongsTo('App\Models\Location');
+    }
+
+    public function scopeCompany($query, $company_id) {
+
+        return $query->whereHas('location', function($query) use ($company_id) {
+            $query->where('company_id', $company_id);
+        });
+    }
 }
