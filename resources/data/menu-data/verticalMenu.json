@@ -75,6 +75,12 @@
         "name": "Services",
         "icon": "service",
         "slug": "Services"
+      },
+      {
+        "url": "appointments",
+        "name": "Appointments",
+        "icon": "appointments",
+        "slug": "Appointments"
       }
     ]
 }

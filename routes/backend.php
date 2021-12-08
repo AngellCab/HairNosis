@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\InitializeController;
 use App\Http\Controllers\Admin\StylistController;
+use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\DashboardController;
 
 /*
@@ -48,8 +49,12 @@ Route::group(['middleware' => 'initialize'], function()  {
     Route::resource('services', ServiceController::class);
 
     #User Routes
-    Route::post('stylists/restore/{id}', [StylistController::class, 'restore'])->name('stylist.restore');
+    Route::post('stylists/restore/{id}', [StylistController::class, 'restore'])->name('stylists.restore');
     Route::resource('stylists', StylistController::class);
+
+     #Appointments Routes
+     Route::post('appointments/restore/{id}', [AppointmentController::class, 'restore'])->name('appointments.restore');
+     Route::resource('appointments', AppointmentController::class);
 });
 
 #Companies Routes

@@ -361,4 +361,53 @@ class DataTableController extends Controller
         
         return $table->make(true);
     }
+
+    /**
+     * Resource data table
+     * 
+     * @param Request $request
+     */
+    public function appointments($request) {
+
+        #Get all branches in current company
+        $branches = Location::withTrashed()
+            ->where('company_id', Session::get('company_id'))
+            ->pluck('id');
+
+        $appointments = DB::table('appointments')
+            ->leftJoin('clients', 'appointments.client_id', '=', 'clients.id')
+            ->whereIn('appointments.location_id', $branches)
+            ->select('*', 'clients.name as client', 'clients.phone as phone', 'appointments.deleted_at as deleted_at')
+            ->get();
+
+        $table = Datatables::of($appointments)
+            ->editColumn('client_id', function($query) {
+                return $query->client;
+            })
+            ->editColumn('phone', function($query) {
+                return $query->phone;
+            })
+            ->editColumn('status', function($query) {
+                $status     = [
+                    '0' => 'Pendiente',
+                    '1' => 'Confirmado',
+                    '2' => 'Cancelado'
+                ];
+
+                return $status[$query->status];
+            })
+            ->addColumn('actions', function($query) {
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
 }
