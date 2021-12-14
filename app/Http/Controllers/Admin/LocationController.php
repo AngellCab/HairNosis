@@ -121,12 +121,13 @@ class LocationController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function edit(Location $location, Request $request)
+    public function edit($id, Request $request)
     {
         $formAction       = 'update';
         $submitButtonText = __('admin.update');
+        $location         = Location::whereHash($id)->first();
         $formModel        = $location;
-        $url              = route($this->routeName.'.update', $location->id);
+        $url              = route($this->routeName.'.update', $location->hash);
         $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
         
         $this->gateCheck($request);
@@ -141,8 +142,9 @@ class LocationController extends Controller
      * @param  Location $location
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Location $location)
+    public function update(Request $request, $id)
     {
+        $location = Location::whereHash($id)->first();
         $location->update($request->except(['company_id', 'manager_id']));
     }
 
@@ -153,9 +155,10 @@ class LocationController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Location $location, Request $request)
+    public function destroy($id, Request $request)
     {
         $this->gateCheck($request);
+        $location = Location::whereHash($id)->first();
         $location->delete();
     }
 
@@ -169,7 +172,7 @@ class LocationController extends Controller
     public function restore($id, Request $request) {
 
         $this->gateCheck($request);
-        $location = Location::withTrashed()->findOrFail($id);
+        $location = Location::withTrashed()->whereHash($id)->first();
         $location->restore();
 
         return $location;

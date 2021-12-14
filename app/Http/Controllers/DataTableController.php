@@ -173,7 +173,7 @@ class DataTableController extends Controller
                     $buttons = ['restore'];
                 }
 
-                $id        = $query->id;
+                $id        = $query->hash;
                 $routeName = $this->routeName;
 
                 return view('admin.actions', compact('buttons', 'id', 'routeName'));
@@ -377,7 +377,12 @@ class DataTableController extends Controller
         $appointments = DB::table('appointments')
             ->leftJoin('clients', 'appointments.client_id', '=', 'clients.id')
             ->whereIn('appointments.location_id', $branches)
-            ->select('*', 'clients.name as client', 'clients.phone as phone', 'appointments.deleted_at as deleted_at')
+            ->select(
+                '*', 
+                'clients.name  as client', 
+                'clients.phone as phone', 
+                'appointments.deleted_at as deleted_at'
+            )
             ->get();
 
         $table = Datatables::of($appointments)
@@ -396,6 +401,35 @@ class DataTableController extends Controller
 
                 return $status[$query->status];
             })
+            ->addColumn('actions', function($query) {
+                $buttons = ['show', 'edit', 'delete'];
+                if (!is_null($query->deleted_at)){
+                    $buttons = ['restore'];
+                }
+
+                $id        = $query->id;
+                $routeName = $this->routeName;
+
+                return view('admin.actions', compact('buttons', 'id', 'routeName'));
+            });
+
+        return $table->make(true);
+    }
+
+    /**
+     * Diagnoses resource
+     * 
+     * @param Request $request
+     */
+    public function diagnoses($request) {
+
+        $diagnoses = DB::table('diagnoses')
+            ->join('clients', 'diagnoses.client_id', '=', 'clients.id')
+            ->join('users', 'diagnoses.createdby', '=', 'users.id')
+            ->select(DB::raw('diagnoses.id, clients.name, diagnoses.apply_date, case when diagnosis_type = 1 then "Diagnostico Uñas" else "Diagnostico Cabello" end as diagnosis_type'),  'users.name as stylist_name')
+            ->get();
+
+        $table = Datatables::of($diagnoses)
             ->addColumn('actions', function($query) {
                 $buttons = ['show', 'edit', 'delete'];
                 if (!is_null($query->deleted_at)){

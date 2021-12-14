@@ -81,6 +81,12 @@
         "name": "Appointments",
         "icon": "appointments",
         "slug": "Appointments"
+      },
+      {
+        "url": "diagnoses",
+        "name": "Diagnoses",
+        "icon": "diagnoses",
+        "slug": "Diagnoses"
       }
     ]
 }
