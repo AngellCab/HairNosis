@@ -213,7 +213,7 @@ class DataTableController extends Controller
                     $buttons = ['restore'];
                 }
 
-                $id        = $query->id;
+                $id        = $query->hash;
                 $routeName = $this->routeName;
 
                 return view('admin.actions', compact('buttons', 'id', 'routeName'));

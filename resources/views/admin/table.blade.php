@@ -69,6 +69,33 @@
 </div>
 <!-- Modal to add new user Ends-->
 
+<!-- Modal to add new services -->
+<div class="modal fade" tabindex="-1" id="exampleModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <a type="button" class="close" data-dismiss="modal" aria-label="Close">x</a>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+
+
+<!-- Modal to add new services End -->
+
 @endsection
 
 @section('vendor-script')
@@ -139,6 +166,8 @@
                     })
                 @endforeach
             @endif
+
+            $('#exampleModal').modal('show')
         })
 
     </script>

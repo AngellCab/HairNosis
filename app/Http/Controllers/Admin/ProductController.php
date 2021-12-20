@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Helpers\Brands;
 use Session;
 
 class ProductController extends Controller
@@ -67,10 +68,11 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-        $formAction = 'create';
+        $formAction       = 'create';
         $submitButtonText = __('admin.create');
-        $form = View::make('admin.patch', compact('submitButtonText', 'formAction'))->render();
-        
+        $brands = [Brands::NA => 'N/D', Brands::REDKEN => 'Redken', Brands::LOREAL => 'Loreal', Brands::KERESTASE => 'Kerestase'];
+        $form   = View::make('admin.patch', compact('submitButtonText', 'formAction', 'brands'))->render();
+
         $this->gateCheck($request);
 
         return response()->json(['error' => false, 'message' => null, 'form' => $form]);
@@ -100,13 +102,15 @@ class ProductController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function edit(Product $product, Request $request)
+    public function edit($id, Request $request)
     {
         $formAction       = 'update';
         $submitButtonText = __('admin.update');
+        $product          = Product::whereHash($id)->first();
         $formModel        = $product;
-        $url              = route($this->routeName.'.update', $product->id);
-        $form             = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url'))->render();
+        $url              = route($this->routeName.'.update', $product->hash);
+        $brands = [Brands::NA => 'N/D', Brands::REDKEN => 'Redken', Brands::LOREAL => 'Loreal', Brands::KERESTASE => 'Kerestase'];
+        $form   = View::make('admin.patch', compact('submitButtonText', 'formAction', 'formModel', 'url', 'brands'))->render();
         
         $this->gateCheck($request);
 
@@ -120,9 +124,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, Product $product)
+    public function update(Request $request, $id)
     {
         // Get the request parameters
+        $product = Product::whereHash($id)->first();
         $product->update($request->except(['company_id', 'hash']));
     }
 
@@ -133,9 +138,10 @@ class ProductController extends Controller
      * @param  Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function destroy(Product $product, Request $request) {
+    public function destroy($id, Request $request) {
         
         $this->gateCheck($request);
+        $product = Product::whereHash($id)->first();
         $product->delete();
     }
 
@@ -149,7 +155,7 @@ class ProductController extends Controller
     public function restore($id, Request $request) {
 
         $this->gateCheck($request);
-        $product = Product::withTrashed()->findOrFail($id);
+        $product = Product::withTrashed()->whereHash($id)->first();
         $product->restore();
 
         return $product;

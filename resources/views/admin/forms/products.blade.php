@@ -1,4 +1,3 @@
-
 <div class="form-group">
     {!! Form::label('name', __('admin.name'), ['class' => 'form-label']) !!}
     {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
@@ -6,7 +5,7 @@
 
 <div class="form-group">
     {!! Form::label('brand_id', __('admin.brand'), ['class' => 'form-label']) !!}
-    {!! Form::select('brand_id', [1 =>  'N/A', 2 => 'Redken', 3 => 'Loreal', 4 => 'Kerestase'], null, ['class' => 'form-control', 'required']) !!}
+    {!! Form::select('brand_id', $brands, null, ['class' => 'form-control', 'required']) !!}
 </div>
 
 <div class="form-group">
