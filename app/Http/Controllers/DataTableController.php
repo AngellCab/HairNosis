@@ -286,12 +286,13 @@ class DataTableController extends Controller
      * @param Request $request
      */
     public function clients($request) {
-     
-        $clients = DB::table('clients')
-            ->leftJoin('locations', 'clients.location_id', '=', 'locations.id')
-            ->leftJoin('users',     'clients.stylist_id',  '=', 'users.id')
+
+        $clients =  DB::table('clients')
+            ->leftJoin('appointments', 'clients.id',               '=', 'appointments.id')
+            ->leftJoin('locations',    'appointments.location_id', '=', 'locations.id')
             ->where(function($query) use ($request) {
-                if (Auth::user()->isAdmin() || Auth::user()->isManager()) {
+                $userAuth = Auth::user();
+                if ($userAuth->isAdmin() || $userAuth->isManager()) {
 
                     #Get all branches in current company
                     $branches = Location::withTrashed()
@@ -302,19 +303,15 @@ class DataTableController extends Controller
                 } else {
                     $query->where('location_id', Session::get('branch_id'));
                 }
-
-                if ($request->has('location_id') && $request->location_id > 0) {
-                    $query->where('location_id', $request->location_id);
-                }
-            })
-            ->select('clients.*', 'locations.name as location_name', 'users.name as stylist_name')->get();
+            })->select(
+                'clients.*',
+                'clients.deleted_at as deleted_at',
+                'locations.name as location_name'
+            )->get();
 
         $table = Datatables::of($clients)
             ->editColumn('location_id', function($query) {
                 return $query->location_name;
-            })
-            ->editColumn('stylist_id', function($query) {
-                return $query->stylist_name;
             })
             ->addColumn('actions', function($query) {
                 
@@ -323,7 +320,7 @@ class DataTableController extends Controller
                     $buttons = ['restore'];
                 }
 
-                $id        = $query->id;
+                $id        = $query->hash;
                 $routeName = $this->routeName;
 
                 return view('admin.actions', compact('buttons', 'id', 'routeName'));

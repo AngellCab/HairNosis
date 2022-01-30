@@ -49,7 +49,6 @@ class ClientController extends Controller
             __('admin.phone'),
             __('admin.email'),
             __('admin.location'),
-            __('admin.stylist'),
             __('controllers.actions')
         ];
 
@@ -59,7 +58,6 @@ class ClientController extends Controller
             "{data: 'phone',       name: 'phone'},",
             "{data: 'email',       name: 'email'},",
             "{data: 'location_id', name: 'location_id'},",
-            "{data: 'stylist_id',  name: 'stylist_id'},",
             "{data: 'actions',     name: 'action', orderable: false, searchable: false, class:'text-center'}"
         ];
 
